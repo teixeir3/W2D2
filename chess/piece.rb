@@ -43,6 +43,46 @@ class Piece
 end
 
 
+class SteppingPiece < Piece
+
+end
+
+class King < SteppingPiece
+  DELTAS = [
+    [1,0],
+    [-1,0],
+    [0,1],
+    [0,-1],
+    [1,1],
+    [-1,-1],
+    [1,-1],
+    [-1,1]
+  ]
+
+  def move_dirs
+    DELTAS
+  end
+end
+
+class Knight < SteppingPiece
+  DELTAS = [
+    [-2, -1],
+    [-2,  1],
+    [-1, -2],
+    [-1,  2],
+    [ 1, -2],
+    [ 1,  2],
+    [ 2, -1],
+    [ 2,  1]
+  ]
+
+  def move_dirs
+    DELTAS
+  end
+end
+
+
+
 # Sliding Pieces: Biship / Rook / Queen
 
 class SlidingPiece < Piece
@@ -59,10 +99,11 @@ class SlidingPiece < Piece
         break if off_board?(current_pos)
         possible_moves << current_pos if board[current_pos].nil?
       end while board[current_pos].nil?
-      p current_pos
+
       next if off_board?(current_pos)
       possible_moves << current_pos if board[current_pos].color != self.color
     end
+
     possible_moves
   end
 
