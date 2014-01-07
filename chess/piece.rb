@@ -12,6 +12,14 @@ class Piece
     "#{@color} #{self.class}"
   end
 
+  protected
+
+  def remove
+    self.board[@pos]= nil
+    true
+    # note that this updates the board, but the removed piece still thinks it has a pos
+  end
+
   private
 
   def pos=(new_pos)
@@ -45,13 +53,6 @@ class SlidingPiece < Piece
       end
     end
     self.pos = end_pos
-  end
-
-  def remove #Doesn't work yet
-    self.pos = nil
-    true
-    # this gets called by a taking piece on the piece it takes
-    # maybe this should be a board method?
   end
 
 end
