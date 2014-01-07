@@ -51,5 +51,4 @@ class Manager < Employee
     end
   end
 
-
 end
