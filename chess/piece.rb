@@ -62,18 +62,26 @@ class Rook < SlidingPiece
     x_end,y_end = end_pos
     path = []
 
-    if x_end != @pos[0]
-      (@pos[0]+1..7).each do |x_pos|
+    if x_end > @pos[0]
+      (@pos[0]+1..x_end).each do |x_pos|
         path << [x_pos,@pos[1]]
       end
-    elsif y_end != @pos[0]
+    elsif x_end < @pos[0]
+      (pos[0]-1).downto(x_end) do |x_pos|
+        path << [x_pos,@pos[1]]
+      end
+    elsif y_end > @pos[1]
       (@pos[1]+1..y_end).each do |y_pos|
+        path << [@pos[0], y_pos]
+      end
+    elsif y_end < @pos[1]
+      (pos[1]-1).downto(y_end) do |y_pos|
         path << [@pos[0], y_pos]
       end
     else
       raise InvalidMoveError
     end
-    p path
+
     if path.last == end_pos
       return path
     else
