@@ -96,6 +96,28 @@ class Knight < SteppingPiece
 end
 
 
+class Pawn < Piece
+
+  def moves
+    x_pos, y_pos = @pos
+    moves = []
+
+    if color == :white
+      moves << [x_pos, y_pos + 1]
+      p moves
+      moves << [x_pos, y_pos + 2] if y_pos == 1
+    elsif color == :black
+      moves << [x_pos, y_pos - 1]
+      moves << [x_pos, y_pos - 2] if y_pos == 6
+    end
+    p moves
+
+    moves.select { |move| board[move].nil? }
+    # Must add ability to take enemies
+  end
+
+end
+
 
 # Sliding Pieces: Biship / Rook / Queen
 
