@@ -20,7 +20,7 @@ class Piece
     end
   end
 
-  protected
+  # protected
 
   def remove
     self.board[@pos]= nil
@@ -28,7 +28,7 @@ class Piece
     # note that this updates the board, but the removed piece still thinks it has a pos
   end
 
-  private
+  # private
 
   def pos=(new_pos)
     self.board[@pos]= nil
@@ -104,16 +104,23 @@ class Pawn < Piece
 
     if color == :white
       moves << [x_pos, y_pos + 1]
-      p moves
-      moves << [x_pos, y_pos + 2] if y_pos == 1
+      moves << [x_pos, y_pos + 2] if y_pos == 1 && board[[x_pos,y_pos+1]].nil?
     elsif color == :black
       moves << [x_pos, y_pos - 1]
-      moves << [x_pos, y_pos - 2] if y_pos == 6
+      moves << [x_pos, y_pos - 2] if y_pos == 6 && board[[x_pos,y_pos-1]].nil?
     end
-    p moves
 
-    moves.select { |move| board[move].nil? }
+    moves = moves.select { |move| board[move].nil? }
     # Must add ability to take enemies
+    take_moves = []
+    if color == :white
+      take_moves << [x_pos + 1, y_pos + 1] unless board[[x_pos + 1, y_pos + 1]].nil?
+      take_moves << [x_pos-1, y_pos + 1] unless board[[x_pos-1, y_pos + 1]].nil?
+    else
+      take_moves << [x_pos + 1, y_pos - 1] unless board[[x_pos + 1, y_pos - 1]].nil?
+      take_moves << [x_pos-1, y_pos - 1] unless board[[x_pos-1, y_pos - 1]].nil?
+    end
+    moves += take_moves.select { |move| board[move].color != self.color }
   end
 
 end
