@@ -15,10 +15,10 @@ class Board
     @rows[x][y]
   end
 
-  def []=(pos, mark)
-    # ADD Error handling
+  def []=(pos, piece)
+    # be careful using this method since it doesnt' update the piece's pos
     x, y = pos[0], pos[1]
-    @rows[x][y] = mark
+    @rows[x][y] = piece
   end
 
   def move(start_pos, end_pos)

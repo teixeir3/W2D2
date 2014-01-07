@@ -12,6 +12,14 @@ class Piece
     "#{@color} #{self.class}"
   end
 
+  private
+
+  def pos=(new_pos)
+    self.board[@pos]= nil
+    @pos = new_pos
+    self.board[@pos] = self
+  end
+
 end
 
 
@@ -35,21 +43,17 @@ class SlidingPiece < Piece
           end
         end
       end
-      @pos = end_pos
     end
-
-
-    # it wouldn't be valid if there is a piece of the same color
-    # if it's a piece of the opposing color, you can move to there but not past
-    # the other piece needs to get removed from the board if so
+    self.pos = end_pos
   end
 
-  def remove
-    @pos = nil
+  def remove #Doesn't work yet
+    self.pos = nil
     true
     # this gets called by a taking piece on the piece it takes
     # maybe this should be a board method?
   end
+
 end
 
 class Rook < SlidingPiece
@@ -69,7 +73,7 @@ class Rook < SlidingPiece
     else
       raise InvalidMoveError
     end
-
+    p path
     if path.last == end_pos
       return path
     else
