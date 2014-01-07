@@ -92,6 +92,41 @@ class Rook < SlidingPiece
 
 end
 
+class Bishop < SlidingPiece
+
+  def path(end_pos)
+    x_end,y_end = end_pos
+    path = []
+    y_pos = @pos[1]
+
+    if x_end > @pos[0]
+      (@pos[0]+1..x_end).each do |x_pos|
+        if y_end > @pos[1]
+          y_pos += 1
+        else
+          y_pos -= 1
+        end
+        path << [x_pos, y_pos]
+      end
+
+    elsif x_end < @pos[0]
+      (pos[0]-1).downto(x_end) do |x_pos|
+        if y_end > @pos[1]
+          y_pos += 1
+        else
+          y_pos -= 1
+        end
+        path << [x_pos, y_pos]
+      end
+    else
+      raise InvalidMoveError
+    end
+    path
+
+  end
+
+end
+
 # Stepping pieces: Knight (ref to knight's travails)/ King
 
 # The pawn (last)
