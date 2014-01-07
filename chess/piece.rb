@@ -12,6 +12,14 @@ class Piece
     "#{@color} #{self.class}"
   end
 
+  def move(end_pos)
+    if self.moves.include?(end_pos)
+      self.pos = end_pos
+    else
+      raise InvalidMoveError
+    end
+  end
+
   protected
 
   def remove
@@ -28,103 +36,77 @@ class Piece
     self.board[@pos] = self
   end
 
+  def off_board?(pos)
+    !(pos[0].between?(0,7) && pos[1].between?(0,7))
+  end
+
 end
 
 
 # Sliding Pieces: Biship / Rook / Queen
 
 class SlidingPiece < Piece
+
   def moves(end_pos)
-    path(end_pos).each do |path_pos|
-      # check to see if there is another piece in the path
-      unless @board[path_pos].nil?
-        # If piece is your own color, your move is blocked
-        raise InvalidMoveError if @board[path_pos].color == @color
-        # if the piece is of the other color...
-        if @board[path_pos].color != @color
-          # you can take it if you are the end of your path
-          if path_pos == end_pos
-            @board[path_pos].remove
-          else
-            # otherwise you are blocked by that piece
-            raise InvalidMoveError
-          end
-        end
-      end
+    possible_moves = []
+
+    move_dirs.each do |move_dir|
+      current_pos = @pos
+      # until we hit a problem, continue mapping the current position
+      begin
+        break if off_board?(current_pos)
+
+      end while current_pos.nil?
     end
-    self.pos = end_pos
+    possible_moves
   end
 
 end
 
 class Rook < SlidingPiece
 
-  def path(end_pos)
-    x_end,y_end = end_pos
-    path = []
+  DELTAS = [
+    [1,0],
+    [-1,0],
+    [0,1],
+    [0,-1]
+  ]
 
-    if x_end > @pos[0]
-      (@pos[0]+1..x_end).each do |x_pos|
-        path << [x_pos,@pos[1]]
-      end
-    elsif x_end < @pos[0]
-      (pos[0]-1).downto(x_end) do |x_pos|
-        path << [x_pos,@pos[1]]
-      end
-    elsif y_end > @pos[1]
-      (@pos[1]+1..y_end).each do |y_pos|
-        path << [@pos[0], y_pos]
-      end
-    elsif y_end < @pos[1]
-      (pos[1]-1).downto(y_end) do |y_pos|
-        path << [@pos[0], y_pos]
-      end
-    else
-      raise InvalidMoveError
-    end
-
-    if path.last == end_pos
-      return path
-    else
-      raise InvalidMoveError
-    end
+  def move_dirs
+    DELTAS
   end
 
 end
 
 class Bishop < SlidingPiece
 
-  def path(end_pos)
-    x_end,y_end = end_pos
-    path = []
-    y_pos = @pos[1]
+  DELTAS = [
+    [1,1],
+    [-1,-1],
+    [1,-1],
+    [-1,1]
+  ]
 
-    if x_end > @pos[0]
-      (@pos[0]+1..x_end).each do |x_pos|
-        if y_end > @pos[1]
-          y_pos += 1
-        else
-          y_pos -= 1
-        end
-        path << [x_pos, y_pos]
-      end
-
-    elsif x_end < @pos[0]
-      (pos[0]-1).downto(x_end) do |x_pos|
-        if y_end > @pos[1]
-          y_pos += 1
-        else
-          y_pos -= 1
-        end
-        path << [x_pos, y_pos]
-      end
-    else
-      raise InvalidMoveError
-    end
-    path
-
+  def move_dirs
+    DELTAS
   end
+end
 
+class Queen < SlidingPiece
+  DELTAS = [
+    [1,0],
+    [-1,0],
+    [0,1],
+    [0,-1],
+    [1,1],
+    [-1,-1],
+    [1,-1],
+    [-1,1]
+  ]
+
+  def move_dirs
+    DELTAS
+  end
 end
 
 # Stepping pieces: Knight (ref to knight's travails)/ King
