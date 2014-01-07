@@ -47,16 +47,21 @@ end
 
 class SlidingPiece < Piece
 
-  def moves(end_pos)
+  def moves
     possible_moves = []
 
     move_dirs.each do |move_dir|
       current_pos = @pos
       # until we hit a problem, continue mapping the current position
       begin
+        current_pos = [current_pos[0] + move_dir[0],
+        current_pos[1] + move_dir[1]]
         break if off_board?(current_pos)
-
-      end while current_pos.nil?
+        possible_moves << current_pos if board[current_pos].nil?
+      end while board[current_pos].nil?
+      p current_pos
+      next if off_board?(current_pos)
+      possible_moves << current_pos if board[current_pos].color != self.color
     end
     possible_moves
   end
