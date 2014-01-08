@@ -103,24 +103,13 @@ class Board
 
   def in_check?(color)
     king_pos = find_king(color)
-    @rows.each_with_index do |row, row_idx|
-      row.each_index do |col_idx|
-        current_cell = @rows[row_idx][col_idx]
-        if current_cell.nil? || current_cell.color == color
-          next
-        else
-          return true if current_cell.moves.include?(king_pos)
-        end
-      end
-    end
-    false
-   end
+    pieces.any? { |piece| piece.moves.include?(king_pos) }
+  end
 
-   def checkmate?(color)
-     players_pieces = pieces.select { |piece| piece.color == color }
-
-     in_check?(color) && players_pieces.none? {|piece| piece.valid_moves.length > 0 }
-   end
+  def checkmate?(color)
+    players_pieces = pieces.select { |piece| piece.color == color }
+    in_check?(color) && players_pieces.none? {|piece| piece.valid_moves.length > 0 }
+  end
 
   def find_king(color)
     @rows.each_index do | row_idx |
