@@ -1,8 +1,6 @@
 class FatalBoardError < StandardError
 end
 
-require_relative 'piece.rb'
-
 class Board
   attr_reader :rows
 
