@@ -3,7 +3,7 @@ require_relative 'piece.rb'
 class Board
   attr_reader :rows
 
-  def self.default_board
+  def default_board
     rows = Array.new(8) { Array.new(8) }
     rows = rows.each_with_index do |row, x|
       next if x.between?(2, 5)
@@ -32,7 +32,7 @@ class Board
     rows
   end
 
-  def initialize(rows = self.class.default_board)
+  def initialize(rows = self.default_board)
     @rows = rows
 
   end
@@ -50,9 +50,13 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    # calls move on piece at the start_pos and passes end_pos
-    # handles exceptions / errors
-    # updates the board with piece in new positon
+    begin
+      start_piece = self[start_pos]
+      p self[start_pos]
+      start_piece.move(end_pos)
+    rescue InvalidMoveError  # MOVE TO GAME CLASS AFTER TESTING
+      puts "Invalid move, human. Try again."
+    end
   end
 
   def dup
@@ -79,6 +83,7 @@ class Board
       end
       puts
     end
+    nil
   end
 
 end

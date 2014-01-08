@@ -119,29 +119,28 @@ end
 
 class Pawn < Piece
 
-  def moves
+  def moves # DOES NOT WORK CORRECTLY -- moves horizontally
     x_pos, y_pos = @pos
     moves = []
 
     if color == :white
       moves << [x_pos, y_pos + 1]
-      moves << [x_pos, y_pos + 2] if y_pos == 1 && board[[x_pos,y_pos+1]].nil?
+      moves << [x_pos, y_pos + 2] if y_pos == 1 && @board[[x_pos,y_pos+1]].nil?
     elsif color == :black
       moves << [x_pos, y_pos - 1]
-      moves << [x_pos, y_pos - 2] if y_pos == 6 && board[[x_pos,y_pos-1]].nil?
+      moves << [x_pos, y_pos - 2] if y_pos == 6 && @board[[x_pos,y_pos-1]].nil?
     end
+    moves = moves.select { |move|  @board[move].nil? }
 
-    moves = moves.select { |move| board[move].nil? }
-    # Must add ability to take enemies
     take_moves = []
     if color == :white
-      take_moves << [x_pos + 1, y_pos + 1] unless board[[x_pos + 1, y_pos + 1]].nil?
-      take_moves << [x_pos-1, y_pos + 1] unless board[[x_pos-1, y_pos + 1]].nil?
+      take_moves << [x_pos + 1, y_pos + 1] unless @board[[x_pos + 1, y_pos + 1]].nil?
+      take_moves << [x_pos-1, y_pos + 1] unless @board[[x_pos-1, y_pos + 1]].nil?
     else
-      take_moves << [x_pos + 1, y_pos - 1] unless board[[x_pos + 1, y_pos - 1]].nil?
-      take_moves << [x_pos-1, y_pos - 1] unless board[[x_pos-1, y_pos - 1]].nil?
+      take_moves << [x_pos + 1, y_pos - 1] unless @board[[x_pos + 1, y_pos - 1]].nil?
+      take_moves << [x_pos-1, y_pos - 1] unless @board[[x_pos-1, y_pos - 1]].nil?
     end
-    moves += take_moves.select { |move| board[move].color != self.color }
+    moves += take_moves.select { |move| @board[move].color != self.color }
   end
 
 end
