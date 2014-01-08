@@ -1,12 +1,40 @@
+require_relative 'piece.rb'
+
 class Board
   attr_reader :rows
 
-  def self.blank_grid
-    Array.new(8) { Array.new(8) }
+  def self.default_board
+    rows = Array.new(8) { Array.new(8) }
+    rows = rows.each_with_index do |row, x|
+      next if x.between?(2, 5)
+      color = :white if x == 0 || x == 1
+      color = :black if x == 6 || x == 7
+      row.each_index do |y|
+        if x == 1 || x == 6
+          rows[x][y] = Pawn.new([x, y], self, color)
+        else
+          case y
+          when 0, 7
+            p color
+            rows[x][y] = Rook.new([x, y], self, color)
+          when 1, 6
+            rows[x][y] = Knight.new([x, y], self, color)
+          when 2, 5
+            rows[x][y] = Bishop.new([x, y], self, color)
+          when 3
+            rows[x][y] = Queen.new([x, y], self, color)
+          when 4
+            rows[x][y] = King.new([x, y], self, color)
+          end
+        end
+      end
+    end
+    rows
   end
 
-  def initialize(rows = self.class.blank_grid)
+  def initialize(rows = self.class.default_board)
     @rows = rows
+
   end
 
   def [](pos)
@@ -36,6 +64,22 @@ class Board
     self[pos].nil?
   end
 
+  def render
+    print "  "
+    ("a".."h").each { |letter| print "#{letter} " }
+    puts
+    @rows.each_with_index do |row, i|
+      print "#{i+1} "
+      row.each do |cell|
+        if cell.nil?
+          print "_ "
+        else
+          print cell.render
+        end
+      end
+      puts
+    end
+  end
 
 end
 

@@ -2,14 +2,29 @@
 class Piece
   attr_reader :pos, :board, :color
 
+  UNICODES = {
+    :w_king => "\u2654",
+    :w_queen => "\u2655",
+    :w_rook => "\u2656",
+    :w_bishop => "\u2657",
+    :w_knight => "\u2658",
+    :w_pawn => "\u2659",
+    :b_king => "\u265A",
+    :b_queen => "\u265B",
+    :b_rook => "\u265C",
+    :b_bishop => "\u265D",
+    :b_knight => "\u265E",
+    :b_pawn => "\u265F"
+  }
+
   def initialize(pos, board, color)
     @pos = pos
     @board = board
     @color = color
   end
 
-  def to_s
-    "#{@color} #{self.class}"
+  def to_sym
+    "#{@color[0]}_#{self.class}".downcase.to_sym
   end
 
   def move(end_pos)
@@ -20,7 +35,11 @@ class Piece
     end
   end
 
-  # protected
+  def render
+    "#{UNICODES[self.to_sym]} "
+  end
+
+  protected
 
   def remove
     self.board[@pos]= nil
@@ -28,7 +47,7 @@ class Piece
     # note that this updates the board, but the removed piece still thinks it has a pos
   end
 
-  # private
+  private
 
   def pos=(new_pos)
     self.board[@pos]= nil
@@ -76,6 +95,7 @@ class King < SteppingPiece
   def move_dirs
     DELTAS
   end
+
 end
 
 class Knight < SteppingPiece
@@ -93,6 +113,7 @@ class Knight < SteppingPiece
   def move_dirs
     DELTAS
   end
+
 end
 
 
