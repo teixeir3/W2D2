@@ -54,6 +54,24 @@ class Board
   def move(start_pos, end_pos)
     begin
       start_piece = self[start_pos]
+      if start_piece.valid_moves.include?(end_pos)
+        start_piece.pos = end_pos
+        self[start_pos] = nil
+        self[end_pos] = start_piece
+      else
+        raise InvalidMoveError
+      end
+    rescue InvalidMoveError  # MOVE TO GAME CLASS AFTER TESTING
+      puts "That piece can't move there, human. Try again."
+    rescue NoMethodError
+      puts "No piece at that location. Try again."
+    end
+    self
+  end
+
+  def move!(start_pos, end_pos)
+    begin
+      start_piece = self[start_pos]
       if start_piece.moves.include?(end_pos)
         start_piece.pos = end_pos
         self[start_pos] = nil
