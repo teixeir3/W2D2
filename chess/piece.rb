@@ -38,14 +38,6 @@ class Piece
     all_moves.reject { |move| move_into_check?(move) }
   end
 
-  protected
-
-  def remove
-    self.board[@pos]= nil
-    true
-    # note that this updates the board, but the removed piece still thinks it has a pos
-  end
-
   private
 
   def off_board?(pos)
