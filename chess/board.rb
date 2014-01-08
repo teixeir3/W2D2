@@ -73,9 +73,19 @@ class Board
   end
 
   def in_check?(color)
-    # find king of color on the board return position,
-    # see if any piece of opposing color can move to that position.
-  end
+    king_pos = find_king(color)
+    @rows.each_with_index do |row, row_idx|
+      row.each_index do |col_idx|
+        current_cell = @rows[row_idx][col_idx]
+        if current_cell.nil? || current_cell.color == color
+          next
+        else
+          return true if current_cell.moves.include?(king_pos)
+        end
+      end
+    end
+    false
+   end
 
   def find_king(color)
     @rows.each_index do | row_idx |
