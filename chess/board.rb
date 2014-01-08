@@ -55,16 +55,32 @@ class Board
   def move(start_pos, end_pos)
     begin
       start_piece = self[start_pos]
-      start_piece.move(end_pos)
+      if start_piece.moves.include?(end_pos)
+        start_piece.pos = end_pos
+        self[start_pos] = nil
+        self[end_pos] = start_piece
+      else
+        raise InvalidMoveError
+      end
     rescue InvalidMoveError  # MOVE TO GAME CLASS AFTER TESTING
       puts "That piece can't move there, human. Try again."
     rescue NoMethodError
       puts "No piece at that location. Try again."
     end
+    self
   end
 
   def dup
+    puts "You are using deep dup!" #REMOVE THIS!!
+    p rows
     duped_rows = rows.map(&:dup)
+    duped_rows.each_with_index do |row, row_idx|
+      row.each_index do |col_idx|
+        current_cell = duped_rows[row_idx][col_idx]
+        next if current_cell.nil?
+        duped_rows[row_idx][col_idx] = current_cell.dup
+      end
+    end
     self.class.new(duped_rows)
   end
 

@@ -1,7 +1,8 @@
 require 'debugger'
 # Piece parent class
 class Piece
-  attr_reader :pos, :board, :color
+  attr_reader :board, :color
+  attr_accessor :pos
 
   UNICODES = {
     :w_king => "\u2654",
@@ -28,16 +29,14 @@ class Piece
     "#{@color[0]}_#{self.class}".downcase.to_sym
   end
 
-  def move(end_pos)
-    if self.moves.include?(end_pos)
-      self.pos = end_pos
-    else
-      raise InvalidMoveError
-    end
-  end
-
   def render
     "#{UNICODES[self.to_sym]} "
+  end
+
+  def move_into_check?(pos) # THIS RETURNS FALSE in at least one case where should be true
+    # debugger
+    duped_board = @board.dup
+    duped_board.move(@pos, pos).in_check?(@color)
   end
 
   protected
@@ -49,12 +48,6 @@ class Piece
   end
 
   private
-
-  def pos=(new_pos)
-    self.board[@pos]= nil
-    @pos = new_pos
-    self.board[@pos] = self
-  end
 
   def off_board?(pos)
     !(pos[0].between?(0,7) && pos[1].between?(0,7))
