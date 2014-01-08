@@ -140,6 +140,12 @@ class Board
     false
    end
 
+   def checkmate?(color)
+     players_pieces = pieces.select { |piece| piece.color == color }
+
+     in_check?(color) && players_pieces.none? {|piece| piece.valid_moves.length > 0 }
+   end
+
   def find_king(color)
     @rows.each_index do | row_idx |
       king_idx = self.rows[row_idx].index { |cell| cell.class == King }
