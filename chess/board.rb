@@ -1,3 +1,6 @@
+class FatalBoardError < StandardError
+end
+
 require_relative 'piece.rb'
 
 class Board
@@ -52,10 +55,11 @@ class Board
   def move(start_pos, end_pos)
     begin
       start_piece = self[start_pos]
-      p self[start_pos]
       start_piece.move(end_pos)
     rescue InvalidMoveError  # MOVE TO GAME CLASS AFTER TESTING
-      puts "Invalid move, human. Try again."
+      puts "That piece can't move there, human. Try again."
+    rescue NoMethodError
+      puts "No piece at that location. Try again."
     end
   end
 
@@ -66,6 +70,21 @@ class Board
 
   def empty?(pos)
     self[pos].nil?
+  end
+
+  def in_check?(color)
+    # find king of color on the board return position,
+    # see if any piece of opposing color can move to that position.
+  end
+
+  def find_king(color)
+    @rows.each_index do | row_idx |
+      king_idx = self.rows[row_idx].index { |cell| cell.class == King }
+      if king_idx
+        return [row_idx, king_idx] if self[[row_idx, king_idx]].color == color
+      end
+    end
+    raise FatalBoardError
   end
 
   def render
