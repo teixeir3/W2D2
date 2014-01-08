@@ -37,7 +37,6 @@ class Board
 
   def initialize(rows = self.default_board)
     @rows = rows
-
   end
 
   def [](pos)
@@ -71,9 +70,12 @@ class Board
   end
 
   def dup
-    puts "You are using deep dup!" #REMOVE THIS!!
-    p rows
+    # new board object
+    # go through original board's array of arrays and dup every object
     duped_rows = rows.map(&:dup)
+    pieces = duped_rows.flatten.reject { |cell| cell.nil? }
+
+
     duped_rows.each_with_index do |row, row_idx|
       row.each_index do |col_idx|
         current_cell = duped_rows[row_idx][col_idx]
@@ -81,7 +83,24 @@ class Board
         duped_rows[row_idx][col_idx] = current_cell.dup
       end
     end
-    self.class.new(duped_rows)
+    duped_board = self.class.new(duped_rows)
+    # THIS COMMENTED OUT VERSION BREAKS MOVE INTO CHECK
+    # pieces.each do |piece|
+    #   piece.board = duped_board
+    # end
+    duped_board.rows.each_with_index do |row, row_idx|
+      row.each_index do |col_idx|
+        current_cell = duped_board[[row_idx, col_idx]]
+        next if current_cell.nil?
+        current_cell.board = duped_board
+      end
+    end
+    duped_board
+  end
+
+  def pieces
+    # returns arr of pieces
+    self.rows.flatten.reject { |cell| cell.nil? }
   end
 
   def empty?(pos)

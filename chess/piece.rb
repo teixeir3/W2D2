@@ -1,8 +1,8 @@
 require 'debugger'
 # Piece parent class
 class Piece
-  attr_reader :board, :color
-  attr_accessor :pos
+  attr_reader :color
+  attr_accessor :pos, :board
 
   UNICODES = {
     :w_king => "\u2654",
@@ -34,8 +34,8 @@ class Piece
   end
 
   def move_into_check?(pos) # THIS RETURNS FALSE in at least one case where should be true
-    # debugger
     duped_board = @board.dup
+    p duped_board[[3,7]].moves
     duped_board.move(@pos, pos).in_check?(@color)
   end
 
