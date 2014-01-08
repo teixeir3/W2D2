@@ -1,3 +1,5 @@
+require_relative 'piece.rb'
+
 class FatalBoardError < StandardError
 end
 
@@ -74,11 +76,7 @@ class Board
   end
 
   def dup
-    # new board object
-    # go through original board's array of arrays and dup every object
     duped_rows = rows.map(&:dup)
-    pieces = duped_rows.flatten.reject { |cell| cell.nil? }
-
 
     duped_rows.each_with_index do |row, row_idx|
       row.each_index do |col_idx|
@@ -88,16 +86,8 @@ class Board
       end
     end
     duped_board = self.class.new(duped_rows)
-    # THIS COMMENTED OUT VERSION BREAKS MOVE INTO CHECK
-    # pieces.each do |piece|
-    #   piece.board = duped_board
-    # end
-    duped_board.rows.each_with_index do |row, row_idx|
-      row.each_index do |col_idx|
-        current_cell = duped_board[[row_idx, col_idx]]
-        next if current_cell.nil?
-        current_cell.board = duped_board
-      end
+    duped_board.pieces.each do |piece|
+      piece.board = duped_board
     end
     duped_board
   end
