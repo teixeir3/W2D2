@@ -1,3 +1,4 @@
+require 'debugger'
 # Piece parent class
 class Piece
   attr_reader :pos, :board, :color
@@ -119,30 +120,30 @@ end
 
 class Pawn < Piece
 
-  def moves # DOES NOT WORK CORRECTLY -- moves horizontally
-    x_pos, y_pos = @pos
+  def moves
+    row, col = @pos
     moves = []
 
-    if color == :white
-      moves << [x_pos, y_pos + 1]
-      moves << [x_pos, y_pos + 2] if y_pos == 1 && @board[[x_pos,y_pos+1]].nil?
-    elsif color == :black
-      moves << [x_pos, y_pos - 1]
-      moves << [x_pos, y_pos - 2] if y_pos == 6 && @board[[x_pos,y_pos-1]].nil?
+    if @color == :white
+      moves << [row + 1, col]
+      moves << [row + 2, col] if row == 1 && @board[[row + 1, col]].nil?
+    elsif @color == :black
+      moves << [row - 1, col]
+      moves << [row - 2, col] if row == 6 && @board[[row - 1, col]].nil?
     end
-    moves = moves.select { |move|  @board[move].nil? }
+    moves = moves.select { |move| @board[move].nil? }
 
     take_moves = []
     if color == :white
-      take_moves << [x_pos + 1, y_pos + 1] unless @board[[x_pos + 1, y_pos + 1]].nil?
-      take_moves << [x_pos-1, y_pos + 1] unless @board[[x_pos-1, y_pos + 1]].nil?
-    else
-      take_moves << [x_pos + 1, y_pos - 1] unless @board[[x_pos + 1, y_pos - 1]].nil?
-      take_moves << [x_pos-1, y_pos - 1] unless @board[[x_pos-1, y_pos - 1]].nil?
+      take_moves << [row + 1, col + 1] unless @board[[row + 1, col + 1]].nil?
+      take_moves << [row + 1, col - 1] unless @board[[row + 1, col - 1]].nil?
+    elsif color == :black
+      take_moves << [row-1, col+1] unless @board[[row-1, col+1]].nil?
+      take_moves << [row-1, col-1] unless @board[[row-1, col-1]].nil?
     end
-    moves += take_moves.select { |move| @board[move].color != self.color }
+    take_moves = take_moves.select { |move| @board[move].color != self.color }
+    moves += take_moves
   end
-
 end
 
 
