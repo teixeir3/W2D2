@@ -33,10 +33,9 @@ class Piece
     "#{UNICODES[self.to_sym]} "
   end
 
-  def move_into_check?(pos) # THIS RETURNS FALSE in at least one case where should be true
-    duped_board = @board.dup
-    p duped_board[[3,7]].moves
-    duped_board.move(@pos, pos).in_check?(@color)
+  def valid_moves
+    all_moves = moves
+    all_moves.reject { |move| move_into_check?(move) }
   end
 
   protected
@@ -51,6 +50,11 @@ class Piece
 
   def off_board?(pos)
     !(pos[0].between?(0,7) && pos[1].between?(0,7))
+  end
+
+  def move_into_check?(pos)
+    duped_board = @board.dup
+    duped_board.move(@pos, pos).in_check?(@color)
   end
 
 end
