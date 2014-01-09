@@ -18,7 +18,6 @@ class Board
         else
           case y
           when 0, 7
-            p color
             rows[x][y] = Rook.new([x, y], self, color)
           when 1, 6
             rows[x][y] = Knight.new([x, y], self, color)
